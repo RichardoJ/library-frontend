@@ -1,4 +1,4 @@
-import { json, useLoaderData } from "react-router-dom";
+import { json, useLoaderData, useRouteLoaderData } from "react-router-dom";
 import PaperForm from "../components/PaperForm";
 
 function EditPaper() {
@@ -11,8 +11,13 @@ export default EditPaper;
 
 export async function loader({request, params}){
     const id = params.id;
+    const token = localStorage.getItem('token');
     const url = "http://localhost:8010/gateway/api/paper/" + id;
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': 'Bearer ' + token
+      },
+    });
   
     if (!response.ok) {
       // throw new Response(JSON.stringify({ message: 'Could not fetch events.' }), {

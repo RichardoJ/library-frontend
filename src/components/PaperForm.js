@@ -57,6 +57,7 @@ function PaperForm({ method, paper }) {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
       },
       body: JSON.stringify(updatePaper),
     }).then((res) => {

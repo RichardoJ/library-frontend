@@ -18,6 +18,9 @@ function AuthorPaperList({ values }) {
       // TO-DO insert API
       fetch("http://localhost:8010/gateway/api/publish/delete/" + id, {
         method: "DELETE",
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        },
       })
         .then((res) => {
           if (res.ok) {

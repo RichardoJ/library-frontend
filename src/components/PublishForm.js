@@ -1,4 +1,4 @@
-import { Form, useNavigate } from "react-router-dom";
+import { Form, useNavigate, useRouteLoaderData } from "react-router-dom";
 import classes from "./PublishForm.module.css";
 import { useRef } from "react";
 import { useState } from "react";
@@ -6,6 +6,8 @@ import DOMPurify from "dompurify";
 
 function PublishForm() {
   const navigate = useNavigate();
+
+  const token = useRouteLoaderData('root');
 
   const titleRef = useRef(null);
   const categoryRef = useRef(null);
@@ -49,18 +51,22 @@ function PublishForm() {
     const sanitizedTitle = DOMPurify.sanitize(titleRef.current.value);
     const sanitizedDesc = DOMPurify.sanitize(descriptionRef.current.value);
     const sanitizedCategory = DOMPurify.sanitize(categoryRef.current.value);
+    const authorId = localStorage.getItem('Id');
     formData.append("title", sanitizedTitle);
     formData.append("description", sanitizedDesc);
     formData.append("author", "Richardo");
     formData.append("category", sanitizedCategory);
     formData.append("publishedYear", new Date().getFullYear());
-    formData.append("authorId", 1);
+    formData.append("authorId", authorId);
     formData.append("citecount", 0);
     formData.append("Pdf", file);
 
     fetch("http://localhost:8010/gateway/api/publish/pdf", {
       method: "POST",
       body: formData,
+      headers: {
+        'Authorization': 'Bearer ' + token
+      },
     })
       .then((res) => {
         if (res.ok) {

@@ -10,7 +10,12 @@ function Paper() {
 export default Paper;
 
 export async function loaderFunction() {
-  const response = await fetch("http://localhost:8010/gateway/api/paper/all");
+  const token = localStorage.getItem('token');
+  const response = await fetch("http://localhost:8010/gateway/api/paper/all",{
+    headers: {
+      'Authorization': 'Bearer ' + token
+    },
+  });
 
   if (!response.ok) {
     // throw new Response(JSON.stringify({ message: 'Could not fetch events.' }), {

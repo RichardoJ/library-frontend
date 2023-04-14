@@ -13,8 +13,13 @@ export default PaperDetail
 
 export async function loader({request, params}) {
     const id = params.id;
+    const token = localStorage.getItem('token');
   
-    const response = await fetch('http://localhost:8010/gateway/api/paper/' + id);
+    const response = await fetch('http://localhost:8010/gateway/api/paper/' + id, {
+      headers: {
+        'Authorization': 'Bearer ' + token
+      },
+    });
   
     if (!response.ok) {
       throw json({message: 'Could not fetch details for selected paper.'}, {

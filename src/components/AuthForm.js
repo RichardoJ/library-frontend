@@ -25,50 +25,26 @@ function AuthForm() {
   const submitHandler = (event) => {
     event.preventDefault();
     setSubmit(true);
-    // const sanitizedName = DOMPurify.sanitize(nameRef.current.value);
-    // const sanitizedUni = DOMPurify.sanitize(uniRef.current.value);
-    const sanitizedEmail = DOMPurify.sanitize(emailRef.current.value);
-    const sanitizedPassword = DOMPurify.sanitize(passwordRef.current.value);
 
-    fetch(
-      "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBN9i8z_kLlpXzWgWHpj5IWOAociIyJr-k",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          email: sanitizedEmail,
-          password: sanitizedPassword,
-          returnSecureToken: true,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        } else {
-          return res.json().then((data) => {
-            let errorMessage = "Authentication Failed!";
-            throw new Error(errorMessage);
-          });
-        }
-      })
-      .then((data) => {
-        localStorage.setItem('token', data.idToken);
-        fetch("http://localhost:5289/api/user/login", {
+    if(isLogin){
+      const sanitizedEmail = DOMPurify.sanitize(emailRef.current.value);
+      const sanitizedPassword = DOMPurify.sanitize(passwordRef.current.value);
+      fetch(
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBN9i8z_kLlpXzWgWHpj5IWOAociIyJr-k",
+        {
           method: "POST",
           body: JSON.stringify({
             email: sanitizedEmail,
             password: sanitizedPassword,
+            returnSecureToken: true,
           }),
           headers: {
             "Content-Type": "application/json",
-            'Authorization': 'Bearer ' + localStorage.getItem('token')
           },
-        }).then((res) => {
+        }
+      )
+        .then((res) => {
           if (res.ok) {
-            resetInput();
             return res.json();
           } else {
             return res.json().then((data) => {
@@ -76,16 +52,115 @@ function AuthForm() {
               throw new Error(errorMessage);
             });
           }
-        }).then((data) => {
-          navigate('/about');
-          localStorage.setItem('Id', data.id);
-          localStorage.setItem('status', true);
         })
-      })
-      .catch((err) => {
-        setSubmit(false);
-        alert(err);
-      });
+        .then((data) => {
+          localStorage.setItem('token', data.idToken);
+          const expiration = new Date();
+          expiration.setHours(expiration.getHours() + 1);
+          localStorage.setItem('expiration', expiration.toISOString());
+
+          fetch("http://localhost:8010/gateway/api/user/login", {
+            method: "POST",
+            body: JSON.stringify({
+              email: sanitizedEmail,
+              password: sanitizedPassword,
+            }),
+            headers: {
+              "Content-Type": "application/json",
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
+            },
+          }).then((res) => {
+            if (res.ok) {
+              resetInput();
+              return res.json();
+            } else {
+              return res.json().then((data) => {
+                let errorMessage = "Authentication Failed!";
+                alert('Authentication Failed');
+                throw new Error(errorMessage);
+              });
+            }
+          }).then((data) => {
+            navigate('/about');
+            localStorage.setItem('Id', data.id);
+            localStorage.setItem('status', true);
+          })
+        })
+        .catch((err) => {
+          alert(err);
+          setSubmit(false);
+        });
+    }else{
+      const sanitizedName = DOMPurify.sanitize(nameRef.current.value);
+      const sanitizedUni = DOMPurify.sanitize(uniRef.current.value);
+      const sanitizedEmail = DOMPurify.sanitize(emailRef.current.value);
+      const sanitizedPassword = DOMPurify.sanitize(passwordRef.current.value);
+      fetch(
+        "http://localhost:8010/gateway/api/user/signup",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            name: sanitizedName,
+            email: sanitizedEmail,
+            password: sanitizedPassword,
+            university : sanitizedUni,
+            role: "READER"
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+        .then((res) => {
+          if (res.ok) {
+            alert('Sign Up successfully');
+            return res.json();
+          } else {
+            return res.json().then((data) => {
+              let errorMessage = "Sign Up Failed!";
+              throw new Error(errorMessage);
+            });
+          }
+        })
+        .then((data) => {
+          localStorage.setItem('Id', data.id);
+          fetch(
+            "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBN9i8z_kLlpXzWgWHpj5IWOAociIyJr-k",
+            {
+              method: "POST",
+              body: JSON.stringify({
+                email: sanitizedEmail,
+                password: sanitizedPassword,
+                returnSecureToken: true,
+              }),
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          )
+            .then((res) => {
+              if (res.ok) {
+                return res.json();
+              } else {
+                return res.json().then((data) => {
+                  let errorMessage = "Authentication Failed!";
+                  throw new Error(errorMessage);
+                });
+              }
+            }).then((data) => {
+              localStorage.setItem('token', data.idToken);
+              const expiration = new Date();
+              expiration.setHours(expiration.getHours() + 1);
+              localStorage.setItem('expiration', expiration.toISOString());
+              navigate('/about');
+            })
+        })
+        .catch((err) => {
+          alert(err);
+          setSubmit(false);
+        });
+
+    }
   };
 
   return (

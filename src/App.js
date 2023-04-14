@@ -12,28 +12,32 @@ import RootLayout from "./pages/Root";
 import NewPaper from "./pages/NewPaper";
 import AuthenticationPage from "./pages/Authentication";
 import { action as logoutAction} from './pages/Logout';
+import {checkAuthLoader, tokenLoader} from './util/auth';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
     errorElement: <ErrorPage />,
+    id: 'root',
+    loader:tokenLoader,
     children: [
       {
         index: true,
         element: <HomePage />,
       },
       { path: "/about", element: <About /> },
-      {path: "/author/paper", element: <AuthorPaper/>, loader: authorLoader},
-      {path: "/author/paper/edit/:id", element: <EditPaper/>, loader: editLoader},
+      {path: "/author/paper", element: <AuthorPaper/>, loader: authorLoader, checkAuthLoader},
+      {path: "/author/paper/edit/:id", element: <EditPaper/>, loader: editLoader, checkAuthLoader},
       {
         path: "/paper",
         element: <PaperRoot />,
+        loader: checkAuthLoader,
         children: [
           {
             path: "",
             element: <Paper />,
-            loader: loaderFunction,
+            loader: loaderFunction
           },
           { path: "/paper/detail/:id", element: <PaperDetail />, loader: detailLoader },
           {path:"/paper/publish", element: <NewPaper/>},
