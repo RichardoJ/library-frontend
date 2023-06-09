@@ -30,7 +30,11 @@ function PublishForm() {
     e.preventDefault();
     var extension = getExtension(e.target.files[0].name);
     if (extension === "pdf") {
-      setFile(e.target.files[0]);
+      const originalFileName = e.target.files[0].name;
+      const modifiedFileName = originalFileName.replace(/\s+/g, "-");
+      const modifiedFile = new File([e.target.files[0]], modifiedFileName, { type: e.target.files[0].type });
+
+      setFile(modifiedFile);
       setValid(true);
       setFileExtensionError(false);
     } else {
@@ -61,7 +65,7 @@ function PublishForm() {
     formData.append("citecount", 0);
     formData.append("Pdf", file);
 
-    fetch("http://localhost:8010/gateway/api/publish/pdf", {
+    fetch("http://online-library/api/publish/pdf", {
       method: "POST",
       body: formData,
       headers: {

@@ -59,7 +59,7 @@ function AuthForm() {
           expiration.setHours(expiration.getHours() + 1);
           localStorage.setItem('expiration', expiration.toISOString());
 
-          fetch("http://localhost:8010/gateway/api/user/login", {
+          fetch("http://online-library/api/user/login", {
             method: "POST",
             body: JSON.stringify({
               email: sanitizedEmail,
@@ -83,6 +83,7 @@ function AuthForm() {
           }).then((data) => {
             navigate('/about');
             localStorage.setItem('Id', data.id);
+            console.log(localStorage.getItem('Id'));
             localStorage.setItem('status', true);
           })
         })
@@ -96,7 +97,7 @@ function AuthForm() {
       const sanitizedEmail = DOMPurify.sanitize(emailRef.current.value);
       const sanitizedPassword = DOMPurify.sanitize(passwordRef.current.value);
       fetch(
-        "http://localhost:8010/gateway/api/user/signup",
+        "http://online-library/api/user/signup",
         {
           method: "POST",
           body: JSON.stringify({
@@ -124,6 +125,7 @@ function AuthForm() {
         })
         .then((data) => {
           localStorage.setItem('Id', data.id);
+          console.log(localStorage.getItem('Id'));
           fetch(
             "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBN9i8z_kLlpXzWgWHpj5IWOAociIyJr-k",
             {

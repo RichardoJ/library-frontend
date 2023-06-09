@@ -3,12 +3,34 @@ import { Button, Card, Col, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import classes from "./AuthorPaperList.module.css";
 
-function AuthorPaperList({ values }) {
+function AuthorPaperList() {
   const [papers, setPapers] = useState([]);
 
   useEffect(() => {
-    setPapers(values);
-  }, [values]);
+    const fetchData = async () => {
+      try {
+        const id = localStorage.getItem('Id');
+        const response = await fetch(`http://online-library/api/paper/author/${id}`, {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          },
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setPapers(data);
+        } else {
+          // Handle error case here
+          console.log('Error:', response.status);
+        }
+      } catch (error) {
+        // Handle error case here
+        console.log('Error:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const deleteHandler = (e, id) => {
     e.preventDefault();
@@ -16,7 +38,7 @@ function AuthorPaperList({ values }) {
 
     if (proceed) {
       // TO-DO insert API
-      fetch("http://localhost:8010/gateway/api/publish/delete/" + id, {
+      fetch("http://online-library/api/publish/delete/" + id, {
         method: "DELETE",
         headers: {
           'Authorization': 'Bearer ' + localStorage.getItem('token')

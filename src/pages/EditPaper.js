@@ -1,4 +1,4 @@
-import { json, useLoaderData, useRouteLoaderData } from "react-router-dom";
+import { json, redirect, useLoaderData } from "react-router-dom";
 import PaperForm from "../components/PaperForm";
 
 function EditPaper() {
@@ -12,7 +12,10 @@ export default EditPaper;
 export async function loader({request, params}){
     const id = params.id;
     const token = localStorage.getItem('token');
-    const url = "http://localhost:8010/gateway/api/paper/" + id;
+    if(token == null){
+      return redirect("/");
+    }
+    const url = "http://online-library/api/paper/" + id;
     const response = await fetch(url, {
       headers: {
         'Authorization': 'Bearer ' + token
@@ -20,20 +23,8 @@ export async function loader({request, params}){
     });
   
     if (!response.ok) {
-      // throw new Response(JSON.stringify({ message: 'Could not fetch events.' }), {
-      //     status: 500,
-      //   });
       throw json({ message: 'Could not fetch events.' }, {status: 500});
     } else {
       return response;
     }
   }
-
-// export async function action({request,params}){
-//     const data = await request.formData();
-
-//     // fetch('localhost:5201/api/publish', {
-//     //     method: 'POST',
-//     //     body:
-//     // });
-// }

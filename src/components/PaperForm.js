@@ -52,7 +52,7 @@ function PaperForm({ method, paper }) {
       paperLink: paper.paperLink
     };
 
-    fetch("http://localhost:8010/gateway/api/publish/update", {
+    fetch("http://online-library/api/publish/update", {
       method: "PUT",
       headers: {
         Accept: "application/json",

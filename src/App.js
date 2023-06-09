@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 import About from "./pages/About";
-import AuthorPaper, {loaderFunction as authorLoader} from "./pages/AuthorPaper";
+import AuthorPaper from "./pages/AuthorPaper";
 import EditPaper, {loader as editLoader} from "./pages/EditPaper";
 import ErrorPage from "./pages/Error";
 import HomePage from "./pages/Home";
@@ -27,8 +27,8 @@ const router = createBrowserRouter([
         element: <HomePage />,
       },
       { path: "/about", element: <About /> },
-      {path: "/author/paper", element: <AuthorPaper/>, loader: authorLoader, checkAuthLoader},
-      {path: "/author/paper/edit/:id", element: <EditPaper/>, loader: editLoader, checkAuthLoader},
+      { path: "/author/paper", element: <AuthorPaper/>, loader: checkAuthLoader},
+      { path: "/author/paper/edit/:id", element: <EditPaper/>, loader: editLoader},
       {
         path: "/paper",
         element: <PaperRoot />,

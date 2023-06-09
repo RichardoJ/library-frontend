@@ -12,7 +12,7 @@ function PaperItem({ data }) {
     const url = data.paperLink;
     const filename = url.substring(url.lastIndexOf("/") + 1);
     const fetchUrl =
-      "http://localhost:8010/gateway/api/catalog/Storage/pdf/" + filename;
+      "http://online-library/api/catalog/Storage/pdf/" + filename;
     const response = await fetch(fetchUrl);
     const value = await response.arrayBuffer();
     setPdfFile(new Uint8Array(value));
@@ -48,7 +48,7 @@ function PaperItem({ data }) {
     const url = data.paperLink;
     const filename = url.substring(url.lastIndexOf("/") + 1);
     const fetchUrl =
-      "http://localhost:8010/gateway/api/catalog/Storage/" + filename;
+      "http://online-library/api/catalog/Storage/" + filename;
     const response = await fetch(fetchUrl);
     const blob = await response.blob();
 

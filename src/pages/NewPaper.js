@@ -32,7 +32,7 @@ export default NewPaper
 //     console.log(formData.get('title'));
 //     console.log(formData.get('Pdf'));
 
-    // const response = fetch('http://localhost:8010/gateway/api/publish/pdf',{
+    // const response = fetch('http://online-library/gateway/api/publish/pdf',{
     //     method: 'POST',
     //     body: formData
     // });

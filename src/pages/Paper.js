@@ -11,7 +11,7 @@ export default Paper;
 
 export async function loaderFunction() {
   const token = localStorage.getItem('token');
-  const response = await fetch("http://localhost:8010/gateway/api/paper/all",{
+  const response = await fetch("http://online-library/api/paper/all",{
     headers: {
       'Authorization': 'Bearer ' + token
     },

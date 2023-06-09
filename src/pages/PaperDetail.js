@@ -1,4 +1,4 @@
-import { json, useLoaderData } from "react-router-dom";
+import { json, redirect, useLoaderData } from "react-router-dom";
 import PaperItem from "../components/PaperItem";
 
 function PaperDetail(){
@@ -14,8 +14,11 @@ export default PaperDetail
 export async function loader({request, params}) {
     const id = params.id;
     const token = localStorage.getItem('token');
+    if(token == null){
+      return redirect("/");
+    }
   
-    const response = await fetch('http://localhost:8010/gateway/api/paper/' + id, {
+    const response = await fetch('http://online-library/api/paper/' + id, {
       headers: {
         'Authorization': 'Bearer ' + token
       },
